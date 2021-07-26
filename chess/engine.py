@@ -1,6 +1,13 @@
+"""
+engine.py
+
+Defines the GameState, Move, and Castling classes. Responsible for handling the computation of moves, making of moves,
+and undoing of moves.
+
+"""
 
 
-class GameState:
+class GameState:  # tracks the current state of the game
 
     def __init__(self):
 
@@ -14,21 +21,21 @@ class GameState:
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         ]
-        self.white_to_move = True
-        self.move_log = []
+        self.white_to_move = True  # which color's turn
+        self.move_log = []  # running log of moves
         self.move_funcs = {"P": self.pawn_moves,
                            "R": self.rook_moves,
                            "N": self.knight_moves,
                            "B": self.bishop_moves,
                            "Q": self.queen_moves,
                            "K": self.king_moves}
-        self.w_king_loc = (7, 4)
-        self.b_king_loc = (0, 4)
-        self.pins = []
-        self.checks = []
-        self.inCheck = False
+        self.w_king_loc = (7, 4)  # white king's location
+        self.b_king_loc = (0, 4)  # black king's location
+        self.pins = []  # pins in the current game state
+        self.checks = []  # checks in the current game state
+        self.inCheck = False  # whether a king is in check
         self.can_ep = ()  # coordinates for en passant square
-        self.castle_rights = Castling(True, True, True, True)
+        self.castle_rights = Castling(True, True, True, True)  # current castling rights for both colors
         self.castling_log = [Castling(self.castle_rights.wks, self.castle_rights.wqs,
                                       self.castle_rights.bks, self.castle_rights.bqs)]
 
@@ -60,7 +67,7 @@ class GameState:
 
     def undo_move(self):
 
-        if len(self.move_log) != 0:
+        if len(self.move_log) != 0:  # only if there is a move to undo, do the reverse of make move
             move = self.move_log.pop()
             self.board[move.start_row][move.start_col] = move.piece_moved
             self.board[move.end_row][move.end_col] = move.piece_captured
@@ -79,7 +86,7 @@ class GameState:
             self.castling_log.pop()
             self.castle_rights = self.castle_rights[-1]
 
-    def update_castle_rights(self, move):
+    def update_castle_rights(self, move):  # take away castling rights based on moves made
 
         if move.piece_moved == "wK":
             self.castle_rights.wks = False
@@ -100,7 +107,7 @@ class GameState:
                 elif move.start_col == 7:
                     self.castle_rights.bks = False
 
-    def generate_possible_moves(self):
+    def generate_possible_moves(self):  # generate all possible moves in the current game state
         moves = []
 
         for row in range(len(self.board)):
@@ -111,7 +118,7 @@ class GameState:
                     self.move_funcs[piece](row, col, moves)
         return moves
 
-    def pawn_moves(self, row, col, moves):
+    def pawn_moves(self, row, col, moves):  # generate all possible pawn moves
 
         enemy = "b" if self.white_to_move else "w"
         direction = -1 if self.white_to_move else 1
@@ -119,7 +126,7 @@ class GameState:
         pinned = False
         pin_d = ()
 
-        for i in range(len(self.pins) - 1, -1, -1):
+        for i in reversed(range(len(self.pins) - 1)):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])
@@ -127,8 +134,8 @@ class GameState:
                 break
 
         if self.white_to_move:
-            if self.board[row+(1*direction)][col] == "  ":
-                if not pinned or pin_d == (-1, 0):
+            if self.board[row+(1*direction)][col] == "  ": # forward movement
+                if not pinned or pin_d == (-1, 0):  # this move is only valid if it isn't pinned
                     moves.append(Move((row, col), (row+(1*direction), col), self.board))
                     if row == start_row and self.board[row+(2*direction)][col] == "  ":
                         moves.append(Move((row, col), (row + (2*direction), col), self.board))
@@ -136,14 +143,16 @@ class GameState:
                 if self.board[row + (1*direction)][col - 1][0] == enemy:
                     if not pinned or pin_d == (-1, -1):
                         moves.append(Move((row, col), (row + (1*direction), col-1), self.board))
-                elif (row-1, col-1) == self.can_ep:
+                elif (row-1, col-1) == self.can_ep:  # add en passant move
                     moves.append(Move((row, col), (row + (1 * direction), col - 1), self.board, ep=True))
             if col + 1 <= 7:  # right capture
                 if self.board[row + (1*direction)][col + 1][0] == enemy:
                     if not pinned or pin_d == (-1, 1):
                         moves.append(Move((row, col), (row + (1*direction), col + 1), self.board))
-                elif (row-1, col+1) == self.can_ep:
+                elif (row-1, col+1) == self.can_ep:  # add en passant move
                     moves.append(Move((row, col), (row + (1 * direction), col + 1), self.board, ep=True))
+
+        # the same here except for black in the downward direction
         else:
             if self.board[row+(1*direction)][col] == "  ":
                 if not pinned or pin_d == (1, 0):
@@ -170,11 +179,11 @@ class GameState:
         pinned = False
         pin_d = ()
 
-        for i in reversed(range(len(self.pins) - 1)):
+        for i in reversed(range(len(self.pins) - 1)):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])
-                if self.board[row][col][1] != "Q":  # don't remove queen pins
+                if self.board[row][col][1] != "Q":  # don't remove queen pins here
                     self.pins.remove(self.pins[i])
                 break
 
@@ -203,7 +212,7 @@ class GameState:
         pinned = False
         pin_d = ()
 
-        for i in reversed(range(len(self.pins) - 1)):
+        for i in reversed(range(len(self.pins) - 1)):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])

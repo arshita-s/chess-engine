@@ -1,6 +1,8 @@
 import pygame as p
 import engine
 
+
+# game window details
 height = width = 512  # pixels
 dim = 8  # Ranks and files
 square_size = height // dim
