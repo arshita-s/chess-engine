@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c577f441-5b51-4118-bd7a-1ff0bbeb41c7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/chess-engine.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chess/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chess/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/chess/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chess/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/chess/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,11 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/chess/engine.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-312">
-              <caret line="194" column="75" selection-start-line="194" selection-start-column="75" selection-end-line="194" selection-end-column="75" />
+            <state relative-caret-position="127">
+              <caret line="395" column="85" selection-start-line="395" selection-start-column="85" selection-end-line="395" selection-end-column="85" />
             </state>
           </provider>
         </entry>
@@ -36,10 +30,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chess/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
+            <state relative-caret-position="-300">
               <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -57,8 +51,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/chess/main.py" />
-        <option value="$PROJECT_DIR$/chess/engine.py" />
         <option value="$PROJECT_DIR$/chess/requirements.txt" />
+        <option value="$PROJECT_DIR$/chess/engine.py" />
       </list>
     </option>
   </component>
@@ -154,7 +148,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" />
@@ -163,7 +157,7 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.34739456" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34739456" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -174,13 +168,6 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/chess/engine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-312">
-          <caret line="194" column="75" selection-start-line="194" selection-start-column="75" selection-end-line="194" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/chess/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -190,11 +177,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/chess/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
+        <state relative-caret-position="-300">
           <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chess/engine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="395" column="85" selection-start-line="395" selection-start-column="85" selection-end-line="395" selection-end-column="85" />
         </state>
       </provider>
     </entry>
