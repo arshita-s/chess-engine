@@ -39,6 +39,19 @@ class GameState:  # tracks the current state of the game
         self.castling_log = [Castling(self.castle_rights.wks, self.castle_rights.wqs,
                                       self.castle_rights.bks, self.castle_rights.bqs)]
 
+        self.checkmate = False
+        self.stalemate = False
+
+    def is_checkmate(self):
+        if self.inCheck and len(self.generate_valid_moves()) == 0:
+            self.checkmate = True
+            return True
+
+    def is_stalemate(self):
+        if not self.inCheck and len(self.generate_valid_moves()) == 0:
+            self.stalemate = True
+            return True
+
     def make_move(self, move):
 
         self.board[move.start_row][move.start_col] = "  "  # make initial space empty
@@ -159,7 +172,7 @@ class GameState:  # tracks the current state of the game
         pinned = False
         pin_d = ()
 
-        for i in reversed(range(len(self.pins) - 1)):  # check for pins
+        for i in reversed(range(len(self.pins))):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])
@@ -212,7 +225,7 @@ class GameState:  # tracks the current state of the game
         pinned = False
         pin_d = ()
 
-        for i in reversed(range(len(self.pins) - 1)):  # check for pins
+        for i in reversed(range(len(self.pins))):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])
@@ -245,7 +258,7 @@ class GameState:  # tracks the current state of the game
         pinned = False
         pin_d = ()
 
-        for i in reversed(range(len(self.pins) - 1)):  # check for pins
+        for i in reversed(range(len(self.pins))):  # check for pins
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 pin_d = (self.pins[i][2], self.pins[i][3])
@@ -272,10 +285,10 @@ class GameState:  # tracks the current state of the game
     def knight_moves(self, row, col, moves):
 
         ally = "w" if self.white_to_move else "b"
-        directions = ((-2, 1), (-1, 2), (-2, -1), (-1, -2), (2, 1), (1, 2), (2, -1), (1, -2))
+        directions = ((-2, -1), (-2, 1), (-1, 2), (1, 2), (2, -1), (2, 1), (-1, -2),(1, -2))
         pinned = False
 
-        for i in reversed(range(len(self.pins) - 1)):
+        for i in reversed(range(len(self.pins))):
             if self.pins[i][0] == row and self.pins[i][1] == col:
                 pinned = True
                 self.pins.remove(self.pins[i])
@@ -333,7 +346,6 @@ class GameState:  # tracks the current state of the game
 
     def get_castle_moves(self, row, col, moves, ally):
         if self.inCheck:
-            print("in check")
             return
         if (self.white_to_move and self.castle_rights.wks) or (not self.white_to_move and self.castle_rights.bks):
             self.get_king_side(row, col, moves, ally)
@@ -343,7 +355,6 @@ class GameState:  # tracks the current state of the game
     def get_king_side(self, row, col, moves, ally):
         if self.board[row][col+1] == "  " and self.board[row][col+2] == "  ":
             if not self.square_under_attack(row, col+1) and not self.square_under_attack(row, col+2):
-                print("king side valid")
                 moves.append(Move((row, col), (row, col+2), self.board, castle=True))
 
     def get_queen_side(self, row, col, moves, ally):
@@ -377,11 +388,11 @@ class GameState:  # tracks the current state of the game
                     valid_squares = [(check[0], check[1])]
                 else:  # all other pieces can be blocked
                     for i in range(1, 8):
-                        valid_squares.append((king_row + check[2]*i, king_col + check[3]*i))
-                        square = (king_row + check[2]*i, king_col + check[3]*i)
+                        square = (king_row + check[2] * i, king_col + check[3] * i)
+                        valid_squares.append(square)
                         if square[0] == check[0] and square[1] == check[1]:
                             break
-                for i in reversed(range(len(moves)-1)):  # get rid of moves that don't block the check
+                for i in reversed(range(len(moves))):  # get rid of moves that don't block the check
                     if moves[i].piece_moved[1] != "K":  # if it's not the king that is being moved...
                         if (moves[i].end_row, moves[i].end_col) not in valid_squares:  # moves that don't block or take
                             moves.remove(moves[i])
@@ -395,7 +406,6 @@ class GameState:  # tracks the current state of the game
             else:
                 self.get_castle_moves(self.b_king_loc[0], self.b_king_loc[1], moves, "b")
 
-        print(str(temp_castling.wks) + " " + str(temp_castling.wqs) + " " + str(temp_castling.bks) + " " + str(temp_castling.bqs))
         self.can_ep = temp_ep
         self.castle_rights = temp_castling
         return moves
