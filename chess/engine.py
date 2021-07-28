@@ -58,7 +58,6 @@ class GameState:  # tracks the current state of the game
         self.board[move.end_row][move.end_col] = move.piece_moved  # place piece in end space
         self.move_log.append(move)  # update log
         self.white_to_move = not self.white_to_move  # switch player turn
-        print(move.chess_notation())
 
         # handling pawn promotion
         if move.is_pawn_prom:
@@ -116,6 +115,8 @@ class GameState:  # tracks the current state of the game
                 else:
                     self.board[move.end_row][move.end_col + 1] = "  "
                     self.board[move.end_row][move.end_col - 2] = move.piece_moved[0] + "R"
+            self.checkmate = False
+            self.stalemate = False
 
     def update_castle_rights(self, move):  # take away castling rights based on moves made
 
@@ -144,7 +145,7 @@ class GameState:  # tracks the current state of the game
             if move.end_row == 7:
                 if move.end_col == 0:
                     self.castle_rights.wqs = False
-                elif move.endCol == 7:
+                elif move.end_col == 7:
                     self.castle_rights.wks = False
         elif move.piece_captured == 'bR':
             if move.end_row == 0:
@@ -180,7 +181,7 @@ class GameState:  # tracks the current state of the game
                 break
 
         if self.white_to_move:
-            if self.board[row+(1*direction)][col] == "  ": # forward movement
+            if self.board[row+(1*direction)][col] == "  ":  # forward movement
                 if not pinned or pin_d == (-1, 0):  # this move is only valid if it isn't pinned
                     moves.append(Move((row, col), (row+(1*direction), col), self.board))
                     if row == start_row and self.board[row+(2*direction)][col] == "  ":
@@ -285,7 +286,7 @@ class GameState:  # tracks the current state of the game
     def knight_moves(self, row, col, moves):
 
         ally = "w" if self.white_to_move else "b"
-        directions = ((-2, -1), (-2, 1), (-1, 2), (1, 2), (2, -1), (2, 1), (-1, -2),(1, -2))
+        directions = ((-2, -1), (-2, 1), (-1, 2), (1, 2), (2, -1), (2, 1), (-1, -2), (1, -2))
         pinned = False
 
         for i in reversed(range(len(self.pins))):
@@ -344,20 +345,20 @@ class GameState:  # tracks the current state of the game
                 return True
         return False
 
-    def get_castle_moves(self, row, col, moves, ally):
+    def get_castle_moves(self, row, col, moves):
         if self.inCheck:
             return
         if (self.white_to_move and self.castle_rights.wks) or (not self.white_to_move and self.castle_rights.bks):
-            self.get_king_side(row, col, moves, ally)
+            self.get_king_side(row, col, moves)
         if (self.white_to_move and self.castle_rights.wqs) or (not self.white_to_move and self.castle_rights.bqs):
-            self.get_queen_side(row, col, moves, ally)
+            self.get_queen_side(row, col, moves)
 
-    def get_king_side(self, row, col, moves, ally):
+    def get_king_side(self, row, col, moves):
         if self.board[row][col+1] == "  " and self.board[row][col+2] == "  ":
             if not self.square_under_attack(row, col+1) and not self.square_under_attack(row, col+2):
                 moves.append(Move((row, col), (row, col+2), self.board, castle=True))
 
-    def get_queen_side(self, row, col, moves, ally):
+    def get_queen_side(self, row, col, moves):
         if self.board[row][col-1] == "  " and self.board[row][col-2] == "  " and self.board[row][col-3]:
             if not self.square_under_attack(row, col-1) and not self.square_under_attack(row, col-2):
                 moves.append(Move((row, col), (row, col-2), self.board, castle=True))
@@ -365,8 +366,8 @@ class GameState:  # tracks the current state of the game
     def generate_valid_moves(self):
 
         temp_ep = self.can_ep
-        temp_castling = Castling(self.castle_rights.wks, self.castle_rights.wqs,
-                                      self.castle_rights.bks, self.castle_rights.bqs)
+        temp_castling = Castling(self.castle_rights.wks, self.castle_rights.wqs, self.castle_rights.bks,
+                                 self.castle_rights.bqs)
         moves = []
         self.inCheck, self.pins, self.checks = self.find_pins_checks()
 
@@ -402,9 +403,9 @@ class GameState:  # tracks the current state of the game
         else:
             moves = self.generate_possible_moves()
             if self.white_to_move:
-                self.get_castle_moves(self.w_king_loc[0], self.w_king_loc[1], moves, "w")
+                self.get_castle_moves(self.w_king_loc[0], self.w_king_loc[1], moves)
             else:
-                self.get_castle_moves(self.b_king_loc[0], self.b_king_loc[1], moves, "b")
+                self.get_castle_moves(self.b_king_loc[0], self.b_king_loc[1], moves)
 
         self.can_ep = temp_ep
         self.castle_rights = temp_castling
@@ -497,8 +498,8 @@ class Move:
 
         self.moveID = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
 
-        self.is_pawn_prom = (self.piece_moved == "wP" and self.end_row == 0) \
-                             or (self.piece_moved == "bP" and self.end_row == 7)
+        self.is_pawn_prom = (self.piece_moved == "wP" and self.end_row == 0) or \
+                            (self.piece_moved == "bP" and self.end_row == 7)
 
         self.is_ep_move = ep
         if self.is_ep_move:
@@ -507,7 +508,7 @@ class Move:
         self.is_castle_move = castle
 
     # chess notation
-    ranks_to_rows = { "1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
+    ranks_to_rows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
     rows_to_ranks = {i: j for j, i in ranks_to_rows.items()}
     files_to_cols = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     cols_to_files = {i: j for j, i in files_to_cols.items()}
@@ -541,4 +542,3 @@ class Castling:
         self.bks = bks
         self.wqs = wqs
         self.bqs = bqs
-
