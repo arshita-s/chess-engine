@@ -1,15 +1,15 @@
 """
 move_finder.py
 
-??? ai will find moves
+AI move finder { will add more details later }
 
 """
 
 import random
 
 
-
 piece_scores = {"K": 0, "Q": 10, "R": 5, "B": 3, "N": 3, "P": 1}
+
 knight_scores = [[0.0, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.0],
                  [0.1, 0.3, 0.5, 0.5, 0.5, 0.5, 0.3, 0.1],
                  [0.2, 0.5, 0.6, 0.65, 0.65, 0.6, 0.5, 0.2],

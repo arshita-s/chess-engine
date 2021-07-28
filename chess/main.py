@@ -19,6 +19,12 @@ square_size = height // dim
 fps = 5
 images = {}
 
+"""
+
+will clean this up eventually
+
+"""
+
 
 def main():
     p.init()  # initialize py game
