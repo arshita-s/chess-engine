@@ -43,7 +43,7 @@ def main():
     selected = ()  # track player selections
     player_selections = []
 
-    white = True  # true if human is playing as white
+    white = False  # true if human is playing as white
     black = False
     move_undone = False
     move_finder_process = None
@@ -235,9 +235,10 @@ def animate(move_log, display, board, clock, to_animate):
             if move.piece_captured != "  ":
                 display.blit(images[move.piece_captured], end)
             # animate piece moving
-            display.blit(images[move.piece_moved], p.Rect(col*square_size, row*square_size, square_size, square_size))
-            p.display.flip()
-            clock.tick(60)
+            if move.piece_captured != "  ":
+                display.blit(images[move.piece_moved], p.Rect(col*square_size, row*square_size, square_size, square_size))
+                p.display.flip()
+                clock.tick(60)
 
 
 def draw_text(display, text):

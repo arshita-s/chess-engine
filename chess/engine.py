@@ -412,7 +412,6 @@ class GameState:  # tracks the current state of the game
         return moves
 
     def find_pins_checks(self):
-
         pins = []  # squares pinned and the direction its pinned from
         checks = []  # squares where enemy is applying a check
         in_check = False
